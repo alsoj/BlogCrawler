@@ -3,7 +3,6 @@ package crawl.blog;
 import com.google.gson.Gson;
 
 import java.io.*;
-import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -55,49 +54,6 @@ public class SearchStatistics {
         Map result = gson.fromJson(targetResponseBody, Map.class);
         ArrayList resultList = getDataFromJson(result);
         return resultList;
-    }
-
-    public static void main(String[] args) {
-
-        String apiUrl = "https://openapi.naver.com/v1/datalab/search";
-
-        Map<String, String> requestHeaders = new HashMap<>();
-        requestHeaders.put("X-Naver-Client-Id", clientId);
-        requestHeaders.put("X-Naver-Client-Secret", clientSecret);
-        requestHeaders.put("Content-Type", "application/json");
-
-        LocalDate now = LocalDate.now();
-        LocalDate beforeWeek = now.minusWeeks(1);
-        LocalDate beforeMonth = now.minusMonths(1);
-        LocalDate beforeYear = now.minusYears(1);
-
-        String requestBody = "{\"startDate\":\"%s\"," +
-                "\"endDate\":\"%s\"," +
-                "\"timeUnit\":\"%s\"," +
-                "\"keywordGroups\":[{\"groupName\":\"%s\"," + "\"keywords\":[\"%s\"]}]}";
-
-        String dailyRequestBody = String.format(requestBody, beforeWeek, now, "date", keyword, keyword);
-        String weeklyRequestBody = String.format(requestBody, beforeMonth, now, "week", keyword, keyword);
-        String monthlyRequestBody = String.format(requestBody, beforeYear, now, "month", keyword, keyword);
-
-
-        String dailyResponseBody = post(apiUrl, requestHeaders, dailyRequestBody);
-        String weeklyResponseBody = post(apiUrl, requestHeaders, weeklyRequestBody);
-        String monthlyResponseBody = post(apiUrl, requestHeaders, monthlyRequestBody);
-
-        Gson gson = new Gson(); // Or use new GsonBuilder().create();
-        Map daily = gson.fromJson(dailyResponseBody, Map.class);
-        Map weekly = gson.fromJson(weeklyResponseBody, Map.class);
-        Map monthly = gson.fromJson(monthlyResponseBody, Map.class);
-
-        ArrayList dailyList = getDataFromJson(daily);
-        ArrayList weeklyList = getDataFromJson(weekly);
-        ArrayList monthlyList = getDataFromJson(monthly);
-
-        for (Object map : dailyList) {
-            Map test = (Map) map;
-            System.out.println(test.get("period") +  " | " + test.get("ratio"));
-        }
     }
 
     private static ArrayList getDataFromJson(Map map) {
