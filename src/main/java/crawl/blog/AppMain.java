@@ -10,14 +10,14 @@ public class AppMain {
     public static void main(String[] args) {
 
         // PC 섹션 순서 조회
-        String pcSectionOrder = SearchKeyword.getSectionOrder("PC");
         System.out.printf("************** PC 섹션 조회 순서 (검색어 : %s) **************", searchKeyword);
+        String pcSectionOrder = SearchKeyword.getSectionOrder("PC");
         System.out.println(pcSectionOrder);
         System.out.println("");
 
         // Mobile 섹션 순서 조회
-        String mobileSectionOrder = SearchKeyword.getSectionOrder("MOBILE");
         System.out.printf("************** Mobile 섹션 조회 순서 (검색어 : %s) **************", searchKeyword);
+        String mobileSectionOrder = SearchKeyword.getSectionOrder("MOBILE");
         System.out.println(mobileSectionOrder);
         System.out.println("");
 
