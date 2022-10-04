@@ -60,46 +60,6 @@ public class SearchDocument {
         return blogCntInt+cafeCntInt+webCntInt+newsCntInt;
     }
 
-    public static void main(String[] args) {
-        String clientId = "wY0wffBXU6pLnxmhwJL1"; //애플리케이션 클라이언트 아이디
-        String clientSecret = "Nvw4n_jVq6"; //애플리케이션 클라이언트 시크릿
-        String searchKeyword = "그린팩토리";
-
-        String text = null;
-        try {
-            text = URLEncoder.encode(searchKeyword, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException("검색어 인코딩 실패",e);
-        }
-
-        String blogApiURL = "https://openapi.naver.com/v1/search/blog?query=" + text;  // 블로그
-        String cafeApiURL = "https://openapi.naver.com/v1/search/cafearticle?query=" + text;  // 카페
-        String webApiURL = "https://openapi.naver.com/v1/search/webkr?query=" + text;  // 웹
-        String newsApiURL = "https://openapi.naver.com/v1/search/news?query=" + text;  // 뉴스
-
-        Map<String, String> requestHeaders = new HashMap<>();
-        requestHeaders.put("X-Naver-Client-Id", clientId);
-        requestHeaders.put("X-Naver-Client-Secret", clientSecret);
-        String blogResponseBody = get(blogApiURL,requestHeaders);
-        String cafeResponseBody = get(cafeApiURL,requestHeaders);
-        String webResponseBody = get(webApiURL,requestHeaders);
-        String newsResponseBody = get(newsApiURL,requestHeaders);
-
-        Gson gson = new Gson(); // Or use new GsonBuilder().create();
-        Map blog = gson.fromJson(blogResponseBody, Map.class);
-        Map cafe = gson.fromJson(cafeResponseBody, Map.class);
-        Map web = gson.fromJson(webResponseBody, Map.class);
-        Map news = gson.fromJson(newsResponseBody, Map.class);
-        Double blogCnt = (Double) blog.get("total");
-        Double cafeCnt = (Double) cafe.get("total");
-        Double webCnt = (Double) web.get("total");
-        Double newsCnt = (Double) news.get("total");
-
-        System.out.printf("************ 문서 수 (검색어 : %s) ************\n", searchKeyword);
-        System.out.println(blogCnt+cafeCnt+webCnt+newsCnt);
-    }
-
-
     private static String get(String apiUrl, Map<String, String> requestHeaders){
         HttpURLConnection con = connect(apiUrl);
         try {
