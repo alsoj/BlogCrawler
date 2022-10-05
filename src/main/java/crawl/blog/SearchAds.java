@@ -25,7 +25,7 @@ public class SearchAds {
 
     public static Map getSearchStatisticsByAd() throws UnsupportedEncodingException {
         String adApiUrl = "https://api.naver.com/keywordstool?hintKeywords=%s&showDetail=1";
-        String url = String.format(adApiUrl, URLEncoder.encode(searchKeyword, "UTF-8"));
+        String url = String.format(adApiUrl, URLEncoder.encode(searchKeyword.replaceAll(" ", ""), "UTF-8"));
 
         long timestamp = System.currentTimeMillis();
         String message = timestamp + ".GET./keywordstool";
@@ -58,47 +58,6 @@ public class SearchAds {
         return resultMap;
 
     }
-
-    public static void main(String[] args) throws SignatureException, UnsupportedEncodingException {
-
-        String adApiUrl = "https://api.naver.com/keywordstool?hintKeywords=%s&showDetail=1";
-        String url = String.format(adApiUrl, URLEncoder.encode(searchKeyword, "UTF-8"));
-
-        long timestamp = System.currentTimeMillis();
-        String message = timestamp + ".GET./keywordstool";
-        String key = SECRET_KEY;
-
-
-        String algorithm = "HmacSHA256"; //HmacMD5,HmacSHA1,HmacSHA224,HmacSHA384,HmacSHA512
-        String signature = null;
-        try {
-            signature = Hmac(key, message, algorithm);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        Map<String, String> requestHeaders = new HashMap<>();
-        requestHeaders.put("Content-Type", "application/json; charset=UTF-8");
-        requestHeaders.put("X-Timestamp", String.valueOf(timestamp));
-        requestHeaders.put("X-API-KEY", API_KEY);
-        requestHeaders.put("X-Customer", CUSTOMER_ID);
-        requestHeaders.put("X-Signature", signature);
-
-        String adResponseBody = get(url, requestHeaders);
-
-        Gson gson = new Gson(); // Or use new GsonBuilder().create();
-        Map result = gson.fromJson(adResponseBody, Map.class);
-
-        ArrayList keywordList = (ArrayList) result.get("keywordList");
-        Map resultMap = (Map) keywordList.get(0);
-        System.out.println("월간 PC 검색량 : " + resultMap.get("monthlyPcQcCnt"));
-        System.out.println("월간 Mobile 검색량 : " + resultMap.get("monthlyMobileQcCnt"));
-        System.out.println("월간 PC 클릭량 : " + resultMap.get("monthlyAvePcClkCnt"));
-        System.out.println("월간 Mobile 클릭량 : " + resultMap.get("monthlyAveMobileClkCnt"));
-        System.out.println("월간 PC 클릭률 : " + resultMap.get("monthlyAvePcCtr"));
-        System.out.println("월간 Mobile 클릭률 : " + resultMap.get("monthlyAveMobileCtr"));
-    }
-
 
     public static String Hmac(String key, String message, String algorithm) throws Exception {
         Mac hasher = Mac.getInstance(algorithm);
