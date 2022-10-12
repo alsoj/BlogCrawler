@@ -7,16 +7,24 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class SearchView {
 
     final static String veiwSearchUrl = Config.VIEW_SEARCH_URL.getValue();
     final static String targetUrl = Config.TARGET_BLOG_URL.getValue();
 
-    public static int getBlogOrderInView(String keyword) {
+    public static Map getBlogOrderInView(String keyword) {
 
         int order = 1;
+        HashMap<String, Object> result_map = new HashMap<String, Object>();
         int result = -1;
+        String post_title = "";
+        String post_url = "";
+        result_map.put("post_order", result);
+        result_map.put("post_title", post_title);
+        result_map.put("post_url", post_url);
 
         while(order < 101) {
             String url = String.format(veiwSearchUrl, order, keyword);
@@ -27,13 +35,16 @@ public class SearchView {
                 Elements lis = document.getElementsByTag("li");
 
                 if(lis.isEmpty()) {
-                    return result;
+                    return result_map;
                 } else {
                     for (Element li : lis) {
                         Elements atags = li.getElementsByTag("a");
                         for (Element a : atags) {
                             String href = a.attr("href");
-                            if(href.contains(targetUrl)) {
+                            String class_name = a.attr("class");
+                            if(href.contains(targetUrl) && class_name.contains("api_txt_lines")) {
+                                post_url= href.replaceAll("\"","").replaceAll("\\\\","");
+                                post_title = a.text();
                                 result = order;
                             }
                         }
@@ -46,6 +57,9 @@ public class SearchView {
             }
         }
 
-        return result;
+        result_map.put("post_order", result);
+        result_map.put("post_title", post_title);
+        result_map.put("post_url", post_url);
+        return result_map;
     }
 }
