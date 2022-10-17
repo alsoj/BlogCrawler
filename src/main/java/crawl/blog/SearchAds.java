@@ -54,9 +54,24 @@ public class SearchAds {
 
         ArrayList keywordList = (ArrayList) result.get("keywordList");
         Map resultMap = (Map) keywordList.get(0);
+        resultMap.put("monthlyPcQcCnt", transResult(resultMap.get("monthlyPcQcCnt")));
+        resultMap.put("monthlyMobileQcCnt", transResult(resultMap.get("monthlyMobileQcCnt")));
 
         return resultMap;
 
+    }
+
+    private static int transResult(Object result) {
+        int newResult = 0;
+
+        if(result instanceof String) {
+            newResult = 0;
+        } else if (result instanceof Double) {
+            double doubleValue = (double) result;
+            newResult = (int) doubleValue;
+        }
+
+        return newResult;
     }
 
     public static String Hmac(String key, String message, String algorithm) throws Exception {
